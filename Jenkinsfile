@@ -1,8 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJS-22'
+    environment {
+        PATH = "/usr/bin:/usr/local/bin:${env.PATH}"
     }
 
     stages {
@@ -10,7 +10,16 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'master',
-                    url: 'https://github.com/Ziauddin9/smart-hospital-mangment'
+                    url: 'https://github.com/Ziauddin9/smart-hospital-mangment.git'
+            }
+        }
+
+        stage('Verify Node') {
+            steps {
+                sh '''
+                node -v
+                npm -v
+                '''
             }
         }
 
@@ -28,8 +37,17 @@ pipeline {
 
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: 'dist/**'
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build Successful!'
+        }
+        failure {
+            echo 'Build Failed!'
         }
     }
 }
