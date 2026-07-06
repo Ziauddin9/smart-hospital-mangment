@@ -6,9 +6,11 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                checkout scm
+                git branch: 'master',
+                    url: 'https://github.com/Ziauddin9/smart-hospital-mangment'
             }
         }
 
@@ -24,19 +26,10 @@ pipeline {
             }
         }
 
-        stage('Archive Build') {
+        stage('Archive') {
             steps {
-                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+                archiveArtifacts artifacts: 'dist/**'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build completed successfully!'
-        }
-        failure {
-            echo 'Build failed!'
         }
     }
 }
