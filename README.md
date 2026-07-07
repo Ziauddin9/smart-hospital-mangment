@@ -259,7 +259,7 @@ git --version
 ## Clone the Repository
 
 ```bash
-git clone https://github.com/Ziauddin9/medicore-hms.git
+git clone https://github.com/Ziauddin9/smart-hospital-managment
 ```
 
 Navigate to the project directory.
