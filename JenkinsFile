@@ -1,7 +1,16 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS-24'
+    }
+
+    options {
+        timestamps()
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -11,34 +20,29 @@ pipeline {
         stage('Verify Environment') {
             steps {
                 sh '''
-                    echo "Current Directory:"
+                    echo "===== Environment ====="
                     pwd
-
-                    echo "Files:"
                     ls -la
-
-                    echo "Node Version:"
                     node -v
-
-                    echo "NPM Version:"
                     npm -v
+                    git --version
                 '''
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                sh 'npm install'
             }
         }
 
-        stage('Build Project') {
+        stage('Build') {
             steps {
                 sh 'npm run build'
             }
         }
 
-        stage('Archive Build') {
+        stage('Archive Artifacts') {
             steps {
                 archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
@@ -49,8 +53,13 @@ pipeline {
         success {
             echo '✅ Build completed successfully.'
         }
+
         failure {
             echo '❌ Build failed.'
+        }
+
+        always {
+            cleanWs()
         }
     }
 }
